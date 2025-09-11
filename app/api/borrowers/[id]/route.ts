@@ -71,10 +71,9 @@ const borrowers = [
   }
 ];
 
-// @ts-ignore
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const borrowerId = params.id;
-  const borrower = borrowers.find(u => u.id === borrowerId);
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }>}) {
+  const {id} = await params;
+  const borrower = borrowers.find(u => u.id === id);
 
   if (borrower) {
     return NextResponse.json(borrower);
