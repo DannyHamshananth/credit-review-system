@@ -11,7 +11,7 @@ export default function CardPipeline({ id, name, loan_type, status, amount, onCl
                     <p className="text-sm text-muted-foreground">{loan_type}</p>
                     <p className="text-sm text-muted-foreground">{status}</p>
                 </div>
-                <p className="font-semibold">${amount}</p>
+                <p className="font-semibold">${amount.toLocaleString()}</p>
             </CardContent>
         </Card>
     );
