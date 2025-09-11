@@ -4,5 +4,5 @@ export default interface Pipelineprops {
   loan_type: string,
   amount: number,
   status: string,
-  onClick: ()=> void
+  onClick?: ()=> void
 }
