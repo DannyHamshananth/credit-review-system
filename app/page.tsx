@@ -6,13 +6,27 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import CardPipeline from "@/components/CardPipeline";
+import BorrowerCard from "@/components/BorrowerCard";
+import Borrower from "@/lib/Borrower";
 
 export default function Home() {
   const [borrowers, setBorrowers] = useState<any>([]);
   const [statuses, setStatuses] = useState<any>(["New","In Review","Approved"]);
+  const [activeProfile, setActiveProfile] = useState<Borrower | null>();
 
-  const handleCardClick = (name: string) => {
-    console.log(name);
+  const handleCardClick = async (id: string) => {
+    try {
+      
+      const response = await fetch(`/api/borrowers/${id}`);
+      if (response.ok){
+      const data = await response.json();
+      setActiveProfile(data);
+      } else if (response.status ==404) {
+        setActiveProfile(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -62,7 +76,7 @@ export default function Home() {
                         {borrowers
                           .filter((b:any) => b.group === status)
                           .map((b:any) => (
-                            <CardPipeline key={b.id} id={b.id} name={b.name} amount={b.amount} loan_type={b.loan_type} status={b.status} onClick={() => handleCardClick(b.name)}/>
+                            <CardPipeline key={b.id} id={b.id} name={b.name} amount={b.amount} loan_type={b.loan_type} status={b.status} onClick={() => handleCardClick(b.id)}/>
                           ))}
                       </div>
                     </TabsContent>
@@ -79,7 +93,14 @@ export default function Home() {
             <h2 className="font-semibold text-lg">Borrower Detail</h2>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Borrower details go here...</p>
+            {activeProfile ? (
+              <BorrowerCard {...activeProfile}/>
+            ) : activeProfile===undefined ? (
+              <p className="text-sm text-gray-600">Profiles not selected.Please select any profile fro pipeline.</p>
+            ): activeProfile===null ? (
+              <p className="text-sm text-gray-600">No profile info available.</p>
+            ):(<p className="text-sm text-gray-600">Some error occured!.</p>)
+            }
           </CardContent>
         </Card>
 
