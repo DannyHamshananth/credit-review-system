@@ -18,7 +18,7 @@ export default function BorrowerDetails(borrower:Borrower) {
         <div className="text-sm text-muted-foreground">
           <p>Email: {borrower.email}</p>
           <p>Phone: {borrower.phone}</p>
-          <p>Loan Amount: ${borrower.loan_amount}</p>
+          <p>Loan Amount: ${borrower.loan_amount.toLocaleString()}</p>
         </div>
       </CardHeader>
 
@@ -55,7 +55,7 @@ export default function BorrowerDetails(borrower:Borrower) {
           </div>
           <div>
             <p className="font-medium">Existing Loan</p>
-            <p>${borrower.existing_loan}</p>
+            <p>${borrower.existing_loan.toLocaleString()}</p>
           </div>
           <div>
             <p className="font-medium">Credit Score</p>
