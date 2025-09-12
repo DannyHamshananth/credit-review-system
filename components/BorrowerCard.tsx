@@ -5,8 +5,23 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 import Borrower from "@/lib/Borrower"
+import { useState } from "react"
 
 export default function BorrowerDetails(borrower:Borrower) {
+  const [escalation, setEscalation] = useState(false);
+  const handleCardClick = async (id: any) => {
+    try {
+      const response = await fetch(`/api/borrowers/${id}/escalate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = await response.json();
+      if(result.response.success) setEscalation(true)
+    } catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <Card className="w-full p-4 space-y-6">
       {/* Header */}
@@ -79,7 +94,7 @@ export default function BorrowerDetails(borrower:Borrower) {
         </div>
 
         <div className="mt-4">
-          <Button variant="default" className="w-full">Escalate to Credit Committee</Button>
+          <Button variant="default" disabled={escalation} className="w-full" onClick={()=>handleCardClick(borrower.id)}>Escalate to Credit Committee</Button>
         </div>
       </CardContent>
     </Card>
