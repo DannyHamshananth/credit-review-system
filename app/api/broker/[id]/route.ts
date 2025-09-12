@@ -15,10 +15,10 @@ const brokers = [
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = parseInt(params.id, 10)
-  const broker = brokers.find(b => b.id === id)
+  const {id} = await params;
+  const broker = brokers.find(b => b.id == parseInt(id))
 
   if (!broker) {
     return NextResponse.json({ error: "Broker not found" }, { status: 404 })
