@@ -1,28 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import CardPipeline from "@/components/CardPipeline";
 import BorrowerCard from "@/components/BorrowerCard";
+import BrokerCard from "@/components/BrokerCard";
 import Borrower from "@/lib/Borrower";
+import Broker from "@/lib/Broker";
 
 export default function Home() {
   const [borrowers, setBorrowers] = useState<any>([]);
   const [statuses, setStatuses] = useState<any>(["New","In Review","Approved"]);
   const [activeProfile, setActiveProfile] = useState<Borrower | null>();
+  const [broker, setBroker] = useState<Broker | null>();
 
   const handleCardClick = async (id: string) => {
     try {
-      
       const response = await fetch(`/api/borrowers/${id}`);
-      if (response.ok){
-      const data = await response.json();
-      setActiveProfile(data);
-      } else if (response.status ==404) {
+      if (response.ok) {
+        const data = await response.json();
+        setActiveProfile(data);
+      } else if (response.status == 404) {
         setActiveProfile(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      const response = await fetch(`/api/broker/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setBroker(data);
+      } else if (response.status == 404) {
+        setBroker(null);
       }
     } catch (error) {
       console.log(error);
@@ -94,12 +107,12 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             {activeProfile ? (
-              <BorrowerCard {...activeProfile}/>
-            ) : activeProfile===undefined ? (
-              <p className="text-sm text-gray-600">Profiles not selected.Please select any profile fro pipeline.</p>
-            ): activeProfile===null ? (
+              <BorrowerCard {...activeProfile} />
+            ) : activeProfile === undefined ? (
+              <p className="text-sm text-gray-600">Profiles not selected.Please select any profile from pipeline.</p>
+            ) : activeProfile === null ? (
               <p className="text-sm text-gray-600">No profile info available.</p>
-            ):(<p className="text-sm text-gray-600">Some error occured!.</p>)
+            ) : (<p className="text-sm text-gray-600">Some error occured!.</p>)
             }
           </CardContent>
         </Card>
@@ -110,7 +123,14 @@ export default function Home() {
             <h2 className="font-semibold text-lg">Broker Info</h2>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Broker info goes here...</p>
+            {broker ? (
+              <BrokerCard {...broker} />
+            ) : broker === undefined ? (
+              <p className="text-sm text-gray-600">Profiles not selected.Please select any profile from pipeline.</p>
+            ) : activeProfile === null ? (
+              <p className="text-sm text-gray-600">No broker info available.</p>
+            ) : (<p className="text-sm text-gray-600">Some error occured!.</p>)
+            }
           </CardContent>
         </Card>
       </main>
